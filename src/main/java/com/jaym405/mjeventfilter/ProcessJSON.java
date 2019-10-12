@@ -23,7 +23,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class ProcessJSON implements ProcessFile{
-     public List<ReportBean> getinputfilerecs(String filename){
+     
+    @Override
+    public List<ReportBean> getinputfilerecs(String filename){
         List<ReportBean> jsonrecordslist = new ArrayList<ReportBean>();
         JSONParser parser = new JSONParser();
         try (Reader reader = new FileReader(filename)) {

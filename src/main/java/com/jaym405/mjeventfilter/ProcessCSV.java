@@ -8,7 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ProcessCSV implements ProcessFile {
-
+    
+    @Override
     public List<ReportBean> getinputfilerecs(String filename) {
         List<ReportBean> csvrecordslist = new ArrayList<ReportBean>();
         // Read from CSV 
@@ -44,6 +45,7 @@ public class ProcessCSV implements ProcessFile {
         return csvrecordslist;
     }
 
+    @Override
     public List<String> getinputfilehdrs(String filename) {
         List<String> headerlist = new ArrayList<>();
 
