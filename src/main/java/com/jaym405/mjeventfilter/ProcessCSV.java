@@ -51,16 +51,19 @@ public class ProcessCSV implements ProcessFile {
         try (CSVReader csvReader = new CSVReader(new FileReader(filename));) {
             String[] values = null;
             int lineno = 0;
-            String hdrstr = null;
             while ((values = csvReader.readNext()) != null && lineno == 0) {
                 List<String> csvrecord = new ArrayList<String>();
-                csvrecord = Arrays.asList(values);
-                List<String> hdrrecord = new ArrayList<String>();
-                hdrstr = csvrecord.get(0);
-                hdrrecord.add(hdrstr);
+                csvrecord = Arrays.asList(values);        
+                headerlist.add(csvrecord.get(0));
+                headerlist.add(csvrecord.get(1));
+                headerlist.add(csvrecord.get(2));
+                headerlist.add(csvrecord.get(3));
+                headerlist.add(csvrecord.get(4));
+                headerlist.add(csvrecord.get(5));
+                headerlist.add(csvrecord.get(6));
+                headerlist.add(csvrecord.get(7));
                 lineno++;
-            }
-            headerlist.add(hdrstr);
+            }            
         } catch (IOException e) {
             e.printStackTrace();
         }
