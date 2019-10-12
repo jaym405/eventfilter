@@ -1,7 +1,9 @@
 package com.jaym405.mjeventfilter;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -98,12 +100,17 @@ public class ReportBean {
     @Override
     public String toString() {
         // client-address,client-guid,request-time,service-guid,retries-request,packets-requested,packets-serviced,max-hole-size
+        
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(this.requesttime, ZoneId.of("Atlantic/Bermuda"));
+        DateTimeFormatter formt13 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z"); 
+        String requesttimestr = zonedDateTime.format(formt13);        
+                
         StringBuffer sb = new StringBuffer();
         sb.append(this.clientaddress);
         sb.append(",");
         sb.append(this.clientguid);
         sb.append(",");
-        sb.append(this.requesttime);
+        sb.append(requesttimestr);
         sb.append(",");
         sb.append(this.serviceguid);
         sb.append(",");
