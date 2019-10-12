@@ -1,23 +1,21 @@
-# mjeventfilter project - forked 
 
 how to run the program:
 
-- Please run the program from src/main/java/com/jaym405/mjeventfilter/MainApp.java. The output will be generated in the main project folder as combinedreport.csv.
+Please run the program from src/main/java/com/jaym405/mjeventfilter/MainApp.java. The output will be generated in the main project folder as combinedreport.csv.
 
 why you chose the tools/libraries used:
 
-- OpenCSV used for reading CSV because it provides a good way of working with CSV. 
-- OpenCSV can be used for generating output CSV as well, but since it is a simple use case I've used FileWriter.
-- json-simple used for JSON parsing, it's a simple library to use.
+OpenCSV used for reading CSV because it provides a good way of working with CSV.
+OpenCSV can be used for generating output CSV as well, but since it is a simple use case I've used FileWriter.
+json-simple used for JSON parsing, it's a simple library to use.
 
 Other comments:
-
-- Created project as somewhat of a monolith and did not use interfaces or POJOs because it is a simple use case.
-
-- Bubble sort is a bit slow and can be implemented with something faster. Using TreeMap with a key value of the datetime
-was removing duplicates and I was not sure if that is part of the requirement.  Can be re-implemented using an Object
-for the record and a Comparator, but did not implement due to having to rework.
-
+- Original working version committed Oct 11 and did not use POJO, used slow bubble sort instead of streams.
+- Improved version is now:
+- Using POJO (ProcessFile) instead of ArrayList<String> - this enables stream filter and sort in a better way.
+- Faster (since not using bubble sort and ArrayList<String>)
+- Abstraction using ProcessFile
+- POJO allowed easy grouping using streams
 
 
 # Data sorting and filtering
