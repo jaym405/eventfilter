@@ -1,7 +1,5 @@
-
 /*
 Read the 3 input files reports.json, reports.csv, reports.xml and output a combined CSV file:
-
 1. The same column order and formatting as reports.csv 
 2. All report records with packets-serviced equal to zero should be excluded 
 3. records should be sorted by request-time in ascending order 
@@ -21,63 +19,44 @@ import java.util.stream.Collectors;
 public class MainApp {
 
     public static void main(String[] args) {
+        ReportUtils rutils = new ReportUtils();
+        ProcessFile pcsv = new ProcessCSV();
+        ProcessFile pjson = new ProcessJSON();
+        ProcessFile pxml = new ProcessXML();
 
-        List<List<String>> headerlist = new ArrayList<>();
-        List<List<String>> csvrecordslist = new ArrayList<List<String>>();
-        List<List<String>> recordslist = new ArrayList<List<String>>();
+        List<String> inputcsvheaderlist = new ArrayList<String>();
+        List<ReportBean> inputcsvrecordslist = new ArrayList<ReportBean>();
 
-        // Read from CSV 
-        try (CSVReader csvReader = new CSVReader(new FileReader("reports.csv"));) {
-            String[] values = null;
-            int lineno = 0;
-            while ((values = csvReader.readNext()) != null) {
-                if (lineno == 0) {
-                    headerlist.add(Arrays.asList(values));
-                } else {
-                    csvrecordslist.add(Arrays.asList(values));
-                }
-                lineno++;
-            }
-            System.out.println("CSV File size: "+lineno);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        List<ReportBean> outputrecordslist = new ArrayList<ReportBean>();
+
+        inputcsvheaderlist = pcsv.getinputfilehdrs("reports.csv");
+        inputcsvrecordslist = pcsv.getinputfilerecs("reports.csv");
 
         // Copy to recordslist
-        recordslist = csvrecordslist.stream().collect(Collectors.toList());
+        outputrecordslist = inputcsvrecordslist.stream().collect(Collectors.toList());
+        System.out.println("recordslist size after adding CSV: " + outputrecordslist.size());
 
-        ReportUtils rutils = new ReportUtils();
+        //  Read from JSON and add to recordslist
+        List<ReportBean> jsonrecordslist = pjson.getinputfilerecs("reports.json");
+        outputrecordslist.addAll(jsonrecordslist);
+        System.out.println("recordslist size after adding JSON: " + outputrecordslist.size());
 
-        // Read from JSON 
-        List<List<String>> jsonrecordslist = rutils.processgetJSON();
-        // Read from XML
-        List<List<String>> xmlrecordslist = rutils.processgetXML();
-        // Add JSON to recordslist
-        recordslist.addAll(jsonrecordslist);
-        // Add XML to recordslist
-        recordslist.addAll(xmlrecordslist);
-        
-         System.out.println("Total records size: "+recordslist.size());
+        // Read from XML and add to recordslist
+        List<ReportBean> xmlrecordslist = pxml.getinputfilerecs("reports.xml");
+        outputrecordslist.addAll(xmlrecordslist);
 
-        // Get position for filtering by packets-serviced
-        int psposition = 0;
-        for (int i = 0; i < headerlist.size(); i++) {
-            List<String> headers = headerlist.get(i);
-            System.out.println("headers:" + headers);
-            for (int k = 0; k < headers.size(); k++) {
-                if ("packets-serviced".equals(headers.get(k))) {
-                    psposition = k;
-                }
-            }
-        }
-        
-        // Filter and sort combined list
-        recordslist = rutils.filterzeropackets(recordslist, psposition);
-        System.out.println("Total records size after filter: "+recordslist.size());
-        recordslist = rutils.sortbyrequesttime(recordslist);        
-       System.out.println("Total records size after sort: "+recordslist.size());
+        System.out.println("recordslist size after adding XML: " + outputrecordslist.size());
+
+        // Filter and sort combined list 
+        outputrecordslist = rutils.filterAndSort(outputrecordslist);
+
+        System.out.println("Total records size after filter and sort: " + outputrecordslist.size());
 
         // Generate output CSV
-        rutils.writeoutputtoCSV(headerlist, recordslist);
+        pcsv.writeoutputfile(inputcsvheaderlist, outputrecordslist, "combinedreport.csv");
+
+        // Generate output
+        rutils.outputserviceguidcounts(outputrecordslist);
+
     }
 }
